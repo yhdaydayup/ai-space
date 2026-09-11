@@ -1,0 +1,32 @@
+{
+  "name": "@yhdaydayup/ai-space",
+  "version": "0.1.0",
+  "description": "Personal AI knowledge-store protocol (L1) for ~/.ai-space. Cursor / Claude Code / local CLI agents.",
+  "license": "MIT",
+  "files": [
+    "SKILL.md",
+    "LICENSE",
+    "references",
+    "scripts"
+  ],
+  "keywords": [
+    "agent-skill",
+    "claude-code",
+    "cursor",
+    "ai-space",
+    "knowledge-store"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yhdaydayup/ai-space.git",
+    "directory": "skills/ai-space"
+  },
+  "bugs": {
+    "url": "https://github.com/yhdaydayup/ai-space/issues"
+  },
+  "homepage": "https://github.com/yhdaydayup/ai-space#readme",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}
