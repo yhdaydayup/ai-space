@@ -6,27 +6,38 @@
 
 ## Install
 
-GitHub（推荐，和 yehong-ai-preference 同一套）：
+包已发布：https://www.npmjs.com/package/@wangjoey666/ai-space
+
+### npm
+
+```bash
+npm install -g @wangjoey666/ai-space --registry https://registry.npmjs.org/
+```
+
+装完把包目录软链进各 CLI 的 skill 路径（不要拷正文）：
+
+```bash
+PKG="$(npm root -g --registry https://registry.npmjs.org/)/@wangjoey666/ai-space"
+ln -sfn "$PKG" ~/.cursor/skills/ai-space
+ln -sfn ~/.cursor/skills/ai-space ~/.agents/skills/ai-space
+ln -sfn ~/.agents/skills/ai-space ~/.claude/skills/ai-space
+```
+
+或：`npx skillpm install @wangjoey666/ai-space`
+
+### GitHub
 
 ```bash
 npx skills add yhdaydayup/ai-space@ai-space -g -y
 ```
 
-或 clone 后软链，不要再拷一份正文：
+或 clone 后软链：
 
 ```bash
 git clone https://github.com/yhdaydayup/ai-space.git ~/ai_workSpace/ai-space
 ln -sfn ~/ai_workSpace/ai-space/skills/ai-space ~/.cursor/skills/ai-space
 ln -sfn ~/.cursor/skills/ai-space ~/.agents/skills/ai-space
 ln -sfn ~/.agents/skills/ai-space ~/.claude/skills/ai-space
-```
-
-npm / skillpm（semver）：
-
-```bash
-npx skillpm install @wangjoey666/ai-space
-# 或
-npm install -g @wangjoey666/ai-space --registry https://registry.npmjs.org/
 ```
 
 装好后新会话 Read `SKILL.md`。Cursor 若要 alwaysApply 开机必读，在**本机** `~/.cursor/rules` 自行留钩子——不进本仓库。Claude 的 `CLAUDE.md` 同样本机自留。
