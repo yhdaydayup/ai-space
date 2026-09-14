@@ -24,9 +24,9 @@ ln -sfn ~/.agents/skills/ai-space ~/.claude/skills/ai-space
 npm / skillpm（semver）：
 
 ```bash
-npx skillpm install @yhdaydayup/ai-space
+npx skillpm install @wangjoey666/ai-space
 # 或
-npm install -g @yhdaydayup/ai-space --registry https://registry.npmjs.org/
+npm install -g @wangjoey666/ai-space --registry https://registry.npmjs.org/
 ```
 
 装好后新会话 Read `SKILL.md`。Cursor 若要 alwaysApply 开机必读，在**本机** `~/.cursor/rules` 自行留钩子——不进本仓库。Claude 的 `CLAUDE.md` 同样本机自留。
@@ -40,7 +40,7 @@ ai-space/
 └── skills/
     └── ai-space/
         ├── SKILL.md           # 开机必读
-        ├── package.json       # npm 包 @yhdaydayup/ai-space
+        ├── package.json       # npm 包 @wangjoey666/ai-space
         ├── references/
         │   ├── init.md
         │   └── maintain.md
