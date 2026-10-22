@@ -28,12 +28,12 @@ test -f "$HOME/.ai-space/wiki/index.md" && echo OK
 | CLI | 链到 |
 | --- | --- |
 | Claude Code | `~/.agents/skills/ai-space` → 真本；再 `~/.claude/skills/ai-space` → `~/.agents/skills/ai-space` |
-| Cursor Agent / Cursor | 真本已在 `~/.cursor/skills/ai-space/`，不必再拷 |
+| Cursor Agent / Cursor | `~/.cursor/skills/ai-space` → git 真本 `~/ai_workSpace/ai-space/skills/ai-space`。没有这条软链就建，不要另拷一份正文 |
 | 其它 CLI | 该产品文档里的 user skills 目录，目录名固定 `ai-space` |
 
 ```bash
-# Claude Code 示例
-mkdir -p "$HOME/.agents/skills" "$HOME/.claude/skills"
+mkdir -p "$HOME/.cursor/skills" "$HOME/.agents/skills" "$HOME/.claude/skills"
+ln -sfn "$HOME/ai_workSpace/ai-space/skills/ai-space" "$HOME/.cursor/skills/ai-space"
 ln -sfn "$HOME/.cursor/skills/ai-space" "$HOME/.agents/skills/ai-space"
 ln -sfn "$HOME/.agents/skills/ai-space" "$HOME/.claude/skills/ai-space"
 test -f "$HOME/.claude/skills/ai-space/SKILL.md" && echo SKILL_OK
@@ -59,7 +59,7 @@ Claude Code 写在 `~/.claude/CLAUDE.md`。其它 CLI 用它自己的用户规�
 
 1. Read `~/.cursor/skills/ai-space/SKILL.md`（或你刚链上的那份，内容应相同）
 2. 确认 `~/.ai-space/` 存在
-3. 不要把 `wiki/`、`sources/` 整仓灌进上下文。开机先不打开 `references/maintain.md`。不要读已废止的 `skills/LOADOUT.md` 当门禁。开机到此不是会话结束。可复述的结论当轮写入 wiki。这次选中的妙记、PRD、导出或一段原文，写成 sources 里的普通文件。没选中的对话不进 sources，也不要扫描全部会话。
+3. 不要把 `wiki/`、`sources/` 整仓灌进上下文。开机先不打开 `references/maintain.md`。不要读已废止的 `skills/LOADOUT.md` 当门禁。开机到此不是会话结束。这一轮若有可复述的结论，或有决定留下的原料，当轮按 SKILL「留下什么」写入。没选中的不写，也不要扫描全部会话。
 
 查知识：`~/.ai-space/wiki/index.md` → 只打开点到的那一页。
 

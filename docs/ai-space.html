@@ -150,7 +150,7 @@
       </div>
       <p>这份仓提供三件事：</p>
       <ol>
-        <li><b>把原料收起来。</b>小材料（妙记、PRD 导出、摘录）进 <code>sources/</code> 当副本；代码仓、大数据源只记指针（软链接 + 定位信息），不把整份拷进来。</li>
+        <li><b>把原料收起来。</b>选中的小材料（妙记、一页 PRD、摘录、小导出）进 <code>sources/</code> 当副本；选中的代码仓、大数据源只记指针（软链接 + 定位信息），不把整份拷进来。没选中的不收。</li>
         <li><b>把长期知识写下来。</b>字段含义、已拍板结论、可复用原则写进 <code>wiki/</code>。下次问「这事怎么定的」，先读 wiki，而不是整份妙记。</li>
         <li><b>把对外可见的知识和本机全量知识分开。</b>本机用带真名和司内细节的原生 wiki；给外部 Agent 的是另一棵 <code>wiki-ext/</code>，敏感个人和密钥不在里面。</li>
       </ol>
@@ -250,11 +250,11 @@ L1 skill（不在上面这个 git 里）
         </tr>
       </table>
       <p><code>wiki-ext/</code> 不是第三种知识。它是 <code>wiki/</code> 的对外副本。本机查知识仍读 <code>wiki/</code>。</p>
-      <p>先看是不是原料：会议记录、PRD、导出文件 → <code>sources/</code>，不要改写成 wiki 冒充原文。代码仓、本机已有的大目录 → 按下一节记指针，不要拷贝。</p>
+      <p>先看 agent 这次有没有选中。没选中的不进仓。选中的会议记录、PRD、导出才入库，形态用下面「大源只记指针」那张表。执行以 L1 <code>SKILL.md</code>「留下什么」为准。</p>
       <p>其余：要查询已定事实或结论 → wiki。要再执行一遍的操作 → 各 Agent / CLI 环境里的产品 skill，<b>不要</b>在本仓做加载门禁。</p>
 
       <h3 id="write-when">何时写入</h3>
-      <p>没有关键词、斜杠命令或固定话术。没有结论、也没有新原料时不写。有可复述的结论或新原料，当轮就写，不必等用户说「记下来」。人说「整理 / 写入 / 巡检」可以触发，但不是门槛。</p>
+      <p>没有关键词、斜杠命令或固定话术。没有结论、也没有这次决定留下的原料时不写。有可复述的结论，或这次决定留下的原料，当轮就写，不必等用户说「记下来」。人说「整理 / 写入 / 巡检」可以触发，但不是门槛。</p>
       <p><b>拍板即写入。</b>会话里一个下次还会来查的结论已经收成「以这个为准」，当时就写入 <code>wiki/</code> 并 commit，不必等人再下指令。只写结论，不写讨论过程。先对照 <code>wiki/index.md</code>，能并进已有页就并。这一步不生成 <code>wiki-ext/</code>。做法在 L1 的 <code>maintain.md</code>，不在这里再写一遍步骤。</p>
       <table>
         <tr><th>写</th><th>不写</th></tr>
@@ -263,7 +263,7 @@ L1 skill（不在上面这个 git 里）
           <td>编译、安装、rebase、日志、当场会过期的数值，以及还没分出对错的选项。</td>
         </tr>
       </table>
-      <p>原料是 agent 这次选中的才放入 <code>sources/</code>，不必等拍板。写成普通文件，换机器 clone 也能读。没选中的对话不进仓，也不要扫描全部会话。结论写 wiki，不把整段对话抄进去。</p>
+      <p>原料按 SKILL「留下什么」收，不必等拍板。小原料是普通文件。大源是软链。线上文档只记 URL。没选中的不进仓，也不要扫描全部会话。结论写 wiki。源文件可以没有对应的 wiki 页。</p>
 
       <h3 id="pointers">大源只记指针，不入库整份</h3>
       <p>知识仓不是第二个代码托管，也不是网盘。真本已经在别处维护的东西，<code>sources/</code> 里只留能找到它的指针，让本机 Agent 需要时顺着去读，而不是再存一份会过期的拷贝。</p>
@@ -285,7 +285,7 @@ L1 skill（不在上面这个 git 里）
 - [PRD 原文](prd/auth-period.docx) — 产品文档导出（入库副本）
 - [CapCut Android](repos/capcut) — 软链接 → ~/work/capcut；git: ssh://…/capcut.git</div>
       <p>Agent 写入时：对代码仓和大目录执行 <code>ln -s</code> 指向已有路径，禁止 <code>cp -R</code> / clone 进 <code>sources/</code>。读的时候只打开 wiki 或 index 点到的那个文件，禁止把软链接目标整仓读进上下文。</p>
-      <p>软链接断了（换机器、目录搬家）：按 index 里的 git URL 和路径重建链接，不要改去拷一份进来顶上。绝对路径因机器而异，以 index 里的定位为准，不要假定别人 clone 知识仓后链接一定能用。</p>
+      <p>大源软链断了（换机器、目录搬家）：按 index 里的 git URL 和路径重建链接，不要改去拷一份进来顶上。绝对路径因机器而异，以 index 里的定位为准，不要假定别人 clone 知识仓后链接一定能用。遗留的会话目录软链断了不用修，也不要再新增。</p>
 
       <h3 id="loadout">产品 skill 不归 L1</h3>
       <p>2026-09-10 起，L1 不再用 <code>LOADOUT.md</code> 或 always-on / recommend / catalog 控制产品 skill。多 CLI、多身份下，仓内账本适配不了当前 Agent 环境。</p>
@@ -422,8 +422,8 @@ L1 skill（不在上面这个 git 里）
       <h4>正确性</h4>
       <table>
         <tr><th>对象</th><th>不合格</th></tr>
-        <tr><td>sources</td><td>有文件或软链接不在 index；index 指向不存在的路径；改了已有入库副本；进了密钥 / <code>.env</code>；把代码仓或大数据源整份拷进来；软链接损坏且 index 没有可重建的 git URL / 路径</td></tr>
-        <tr><td>wiki</td><td>有页不在 index；index 或正文里有打不开的链接；新 source 没有挂到相关 wiki；wiki 改了 sources 里的入库原文；同一事实两页互相矛盾且未标明以谁为准</td></tr>
+        <tr><td>sources</td><td>有文件或软链接不在 index；index 指向的仓内路径本身不存在；改了已有入库副本；进了密钥 / <code>.env</code>；把代码仓或大数据源整份拷进来。大源软链损坏，且 index 没有可重建的 git URL 或路径。本次把小原料写成软链。遗留会话软链断了不算不合格。仓里已经指向仓外单文件的旧软链，不因此判不合格</td></tr>
+        <tr><td>wiki</td><td>有页不在 index；index 或正文里有打不开的链接；wiki 引用了 source 但链不上；wiki 改了 sources 里的入库原文；同一事实两页互相矛盾且未标明以谁为准。source 没有对应 wiki 页，不算不合格</td></tr>
         <tr><td>wiki-ext</td><td>有页不在 index；死链；链到 <code>sources/</code> 或 <code>wiki/</code>。禁止内容、投影是否忠实，归下面「脱敏」轴，不在这里重复打勾就算过。</td></tr>
       </table>
 
@@ -431,9 +431,9 @@ L1 skill（不在上面这个 git 里）
       <p>查询协议规定：先读 index，再只打开点到的那一篇。巡检要验证这条路走得通、走得快。</p>
       <table>
         <tr><th>对象</th><th>不合格</th></tr>
-        <tr><td>所有 index</td><td>有页/文件在目录里却不在 index（找不到）；index 有条目但目标不存在（空跑）；一行只有文件名没有说明，或两行说明几乎一样，无法判断该开哪篇</td></tr>
+        <tr><td>所有 index</td><td>有页/文件在目录里却不在 index（找不到）；index 有条目，但仓内这条路径本身不存在（空跑）；一行只有文件名没有说明，或两行说明几乎一样，无法判断该开哪篇</td></tr>
         <tr><td>wiki/index.md</td><td>条目一长串没有分组，读完 index 仍不知道去哪；一页塞了多个互不相关主题，index 无法指向「这一问该看哪一节」；能并进已有主题页的内容却新建了孤岛页</td></tr>
-        <tr><td>sources/index.md</td><td>软链接只写了仓库根，没写 wiki 实际用到的子路径或文件，Agent 只能把整树当原文；小材料重复入库多份、index 无法区分哪份是当前锚点</td></tr>
+        <tr><td>sources/index.md</td><td>大源软链只写了仓库根，而 wiki 实际用到的是子路径、index 却没写，Agent 只能把整树当原文；小材料重复入库多份、index 无法区分哪份是当前锚点</td></tr>
         <tr><td>wiki-ext/index.md</td><td>列出了未生成的原生页；说明里带了敏感个人或密钥；条目比原生 index 更含糊，外部 Agent 更难选页</td></tr>
       </table>
       <p>修索引效率时：改一句话说明、给 index 加分组小标题、合并孤岛页、拆厨房水槽页、给大源 index 补上具体子路径。不要靠「把更多正文写进 index」来解决——index 仍应是链接 + 一句能做决定的话。</p>
