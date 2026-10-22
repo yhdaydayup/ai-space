@@ -59,7 +59,7 @@ Claude Code 写在 `~/.claude/CLAUDE.md`。其它 CLI 用它自己的用户规�
 
 1. Read `~/.cursor/skills/ai-space/SKILL.md`（或你刚链上的那份，内容应相同）
 2. 确认 `~/.ai-space/` 存在
-3. 不要把 `wiki/`、`sources/` 整仓灌进上下文。开机先不打开 `references/maintain.md`。不要读已废止的 `skills/LOADOUT.md` 当门禁。开机到此不是会话结束。可复述的结论当轮写入 wiki；新拿到的妙记、PRD、导出，或还没进 `sources/index.md` 的会话树，当轮放入 sources。已经软链的会话树不要逐条再记。
+3. 不要把 `wiki/`、`sources/` 整仓灌进上下文。开机先不打开 `references/maintain.md`。不要读已废止的 `skills/LOADOUT.md` 当门禁。开机到此不是会话结束。可复述的结论当轮写入 wiki。这次选中的妙记、PRD、导出或一段原文，写成 sources 里的普通文件。没选中的对话不进 sources，也不要扫描全部会话。
 
 查知识：`~/.ai-space/wiki/index.md` → 只打开点到的那一页。
 

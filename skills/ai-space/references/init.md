@@ -8,5 +8,6 @@
    - 已有 remote：clone 到这个路径。
    - 没有仓：建目录骨架（`sources/` `wiki/` `wiki-ext/` 及三份 index），`git init`。
    - 写入用本包 `scripts/write-lock.sh`。无 remote 不 pull。
-3. 写开机钩子（本机文件，不进本 skill 仓）：新对话开始 Read 本包 `SKILL.md`。Cursor 用 alwaysApply 规则指向该文件。
-4. 给外部 Agent 不要 clone `~/.ai-space/`，只导出已确认的 `wiki-ext/`。
+3. 不要在初始化时扫描或导入全部对话。仓里已有的会话软链可以不管；要读的内容应是之前 agent 选中后写下的普通文件。
+4. 写开机钩子（本机文件，不进本 skill 仓）：新对话开始 Read 本包 `SKILL.md`。Cursor 用 alwaysApply 规则指向该文件。
+5. 给外部 Agent 不要 clone `~/.ai-space/`，只导出已确认的 `wiki-ext/`。知识仓若有 remote，只能是只有你能读的仓库。
