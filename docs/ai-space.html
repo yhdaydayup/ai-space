@@ -1,0 +1,564 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>个人 AI 知识仓</title>
+  <style>
+    :root {
+      --bg: #f2eee6;
+      --ink: #1a1714;
+      --muted: #5c564e;
+      --line: #d6cec0;
+      --paper: #fffcf6;
+      --l1: #2c4a6e;
+      --l2: #2c5c4f;
+      --gate: #8b3a2c;
+      --soft: #efe8db;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+      line-height: 1.6;
+    }
+    .layout { display: grid; grid-template-columns: 200px 1fr; min-height: 100vh; }
+    nav.toc {
+      position: sticky; top: 0; height: 100vh; overflow: auto;
+      padding: 22px 12px 40px;
+      border-right: 1px solid var(--line);
+      background: #ebe4d6;
+      font-size: 12.5px;
+    }
+    nav.toc .brand { font-weight: 650; font-size: 13px; padding: 0 8px 12px; }
+    nav.toc .g { margin: 14px 8px 4px; font-size: 10.5px; letter-spacing: .08em; color: #8a8174; text-transform: uppercase; }
+    nav.toc a { display: block; color: var(--muted); text-decoration: none; padding: 3px 8px; border-radius: 6px; }
+    nav.toc a:hover { background: #fff; color: var(--ink); }
+    .main { padding: 32px 36px 96px; max-width: 900px; }
+    h1 { font-size: 28px; letter-spacing: -.03em; margin: 0 0 6px; }
+    .lead { color: var(--muted); margin: 0 0 22px; font-size: 15px; max-width: 720px; }
+    h2 {
+      font-size: 19px; margin: 40px 0 12px; padding: 14px 0 0;
+      border-top: 1px solid var(--line);
+    }
+    h2:first-of-type { border-top: 0; margin-top: 8px; padding-top: 0; }
+    h3 { font-size: 15.5px; margin: 22px 0 8px; }
+    h4 { font-size: 13.5px; margin: 16px 0 6px; color: var(--muted); font-weight: 650; }
+    p { margin: 0 0 10px; }
+    .thesis {
+      background: var(--paper); border: 1px solid var(--line); border-radius: 14px;
+      padding: 16px 18px; margin: 0 0 18px;
+    }
+    .thesis b { display: block; margin-bottom: 8px; }
+    .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 12px 0 16px; }
+    .card {
+      background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 14px 15px;
+    }
+    .card .k { font-size: 11px; letter-spacing: .07em; font-weight: 650; margin-bottom: 4px; }
+    .k.l1 { color: var(--l1); } .k.l2 { color: var(--l2); } .k.gate { color: var(--gate); }
+    .card h3 { margin: 0 0 6px; font-size: 15px; }
+    .card p { margin: 0; font-size: 13.5px; color: var(--muted); }
+    .arch { margin: 8px 0 22px; }
+    .arch-row { display: grid; gap: 8px; margin-bottom: 8px; }
+    .arch-row.two { grid-template-columns: 1fr 1fr; }
+    .arch-cap { text-align: center; font-size: 12px; color: var(--muted); margin: 2px 0 8px; }
+    .box {
+      background: var(--paper); border: 1px solid var(--line); border-radius: 12px;
+      padding: 12px 14px;
+    }
+    .box .t { font-size: 11px; font-weight: 650; letter-spacing: .06em; margin-bottom: 4px; }
+    .box .t.l1 { color: var(--l1); } .box .t.l2 { color: var(--l2); } .box .t.gate { color: var(--gate); }
+    .box p { margin: 0; font-size: 13px; color: var(--muted); }
+    .tree {
+      font-family: ui-monospace, Menlo, monospace; font-size: 12px;
+      background: #1a1714; color: #efe7d8; border-radius: 12px;
+      padding: 14px 16px; overflow: auto; white-space: pre; line-height: 1.45; margin: 10px 0 14px;
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 13.5px; margin: 8px 0 14px; }
+    th, td { border: 1px solid var(--line); padding: 7px 10px; text-align: left; vertical-align: top; }
+    th { background: var(--soft); font-weight: 650; }
+    ol, ul { margin: 0 0 12px; padding-left: 20px; }
+    li { margin: 4px 0; }
+    code { font-size: 12.5px; background: var(--soft); padding: 1px 5px; border-radius: 4px; }
+    .flow {
+      background: var(--paper); border: 1px solid var(--line); border-radius: 12px;
+      padding: 4px 0; margin: 10px 0 14px;
+    }
+    .flow ol { list-style: none; padding: 0; margin: 0; counter-reset: step; }
+    .flow li {
+      counter-increment: step; position: relative;
+      padding: 10px 14px 10px 48px; margin: 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .flow li:last-child { border-bottom: 0; }
+    .flow li::before {
+      content: counter(step);
+      position: absolute; left: 14px; top: 10px;
+      width: 22px; height: 22px; border-radius: 999px;
+      background: var(--soft); font-size: 12px; font-weight: 650;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .note {
+      font-size: 13.5px; color: var(--muted);
+      border-left: 3px solid var(--line); padding: 2px 0 2px 12px; margin: 8px 0 14px;
+    }
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; }
+      nav.toc { position: relative; height: auto; }
+      .cards, .arch-row.two { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <nav class="toc">
+      <div class="brand">个人 AI 知识仓</div>
+      <a href="#why">1. 问题与能力</a>
+      <a href="#how">2. 实现方式</a>
+      <a href="#arch">3. 整体架构</a>
+      <div class="g">使用说明</div>
+      <a href="#protocol">4. 协议</a>
+      <a href="#kinds">内容怎么分类</a>
+      <a href="#write-when">何时写入</a>
+      <a href="#pointers">大源只记指针</a>
+      <a href="#loadout">产品 skill 不归 L1</a>
+      <a href="#query-rule">怎么查</a>
+      <a href="#lint-rule">巡检原则</a>
+      <a href="#lint-redact">巡检·脱敏</a>
+      <a href="#redact-rule">对外规则</a>
+      <a href="#redact-how">怎么脱敏</a>
+      <a href="#git-rule">提交规则</a>
+      <a href="#flows">5. 流程</a>
+      <a href="#flow-init">初始化</a>
+      <a href="#flow-boot">开机</a>
+      <a href="#flow-write">写入</a>
+      <a href="#flow-lint">巡检</a>
+      <a href="#flow-redact">生成脱敏 wiki</a>
+    </nav>
+
+    <div class="main">
+      <h1>个人 AI 知识仓</h1>
+      <p class="lead">给本机 Cursor / Claude 用的一份知识 git，以及告诉 Agent 怎么用这份仓的薄协议。外部 Agent（Aime / Mira 等）只能看到脱敏后的 wiki。</p>
+
+      <h2 id="why">1. 解决什么问题、提供什么能力</h2>
+      <div class="thesis">
+        <b>问题：每次问 Agent，都从会议记录、PRD、聊天记录里临时翻答案。</b>
+        <p>这样做贵、不稳定，下次还要重来；也容易把不该给同事看的原文带出这台机器。</p>
+      </div>
+      <p>这份仓提供三件事：</p>
+      <ol>
+        <li><b>把原料收起来。</b>小材料（妙记、PRD 导出、摘录）进 <code>sources/</code> 当副本；代码仓、大数据源只记指针（软链接 + 定位信息），不把整份拷进来。</li>
+        <li><b>把长期知识写下来。</b>字段含义、已拍板结论、可复用原则写进 <code>wiki/</code>。下次问「这事怎么定的」，先读 wiki，而不是整份妙记。</li>
+        <li><b>把对外可见的知识和本机全量知识分开。</b>本机用带真名和司内细节的原生 wiki；给外部 Agent 的是另一棵 <code>wiki-ext/</code>，敏感个人和密钥不在里面。</li>
+      </ol>
+      <p>Cursor 和 Claude 读写同一份仓。知识仓里的数据由 Agent 按协议自行维护和提交，不必等人确认；人也可以直接改文件。自然语言只是一种触发方式，不是规定动作。把内容交给外部 Agent 时仍要等人确认。</p>
+
+      <h2 id="how">2. 用什么方式实现</h2>
+      <p>两样东西，不混在一个 git 里：</p>
+      <ul>
+        <li><b>知识仓</b>：工作副本固定在 <code>~/.ai-space/</code>，一个 git。里面是 sources 和两层 wiki。</li>
+        <li><b>L1</b>：一个独立的 skill 包，装在 Cursor / Claude 各自的 skill 目录里。开机只读它的薄 <code>SKILL.md</code>，里面写清仓在哪、目录必须长什么样、怎么查、怎么更新。完整步骤放 <code>references/maintain.md</code>，用到再读。产品 skill 怎么加载，L1 不管。</li>
+      </ul>
+      <p>知识不是每次从原文检索拼出来的，而是先写入 wiki，再按目录打开。对外也不是把本机 wiki 改成「已脱敏」——那样自己以后查不到真名——而是按规则从原生 wiki <b>生成一份副本</b> 到 <code>wiki-ext/</code>。</p>
+      <p>本机 Agent 看得到整仓。外部 Agent 只拿到 <code>wiki-ext/</code> 的拷贝，看不到 <code>sources/</code> 和原生 <code>wiki/</code>。知识仓可以 push 到只有自己能读的 remote；同事能 clone 的网只接收导出的 <code>wiki-ext/</code>。</p>
+
+      <h2 id="arch">3. 整体架构</h2>
+      <div class="arch">
+        <div class="arch-row two">
+          <div class="box"><div class="t l1">L1 协议包</div><p>不是知识正文。告诉任意已安装它的 Agent：仓的路径、目录约定、如何查 wiki、如何写入、如何生成对外副本。不管产品 skill 加载。</p></div>
+          <div class="box"><div class="t l2">知识仓 git</div><p><code>~/.ai-space/</code>。一份真本，本机多个 Agent 一起读写。L1 不进这个 git。</p></div>
+        </div>
+        <div class="arch-cap">知识仓内部</div>
+        <div class="arch-row two">
+          <div class="box"><div class="t l2">本机可见</div><p><code>sources/</code> 原文；<code>wiki/</code> 全量已整理知识（可留真名、司内细节、1on1）。</p></div>
+          <div class="box"><div class="t gate">外部可见</div><p>只有 <code>wiki-ext/</code>。从 <code>wiki/</code> 按禁止表生成。密钥和敏感个人不在这里。</p></div>
+        </div>
+      </div>
+
+      <div class="tree">~/.ai-space/                         知识仓，一个 git
+├── sources/                         原文：小文件入库；大源用软链接
+│   ├── index.md
+│   ├── meetings/
+│   └── repos/
+│       └── capcut → /Users/…/work/capcut   软链接，不拷贝仓库
+├── wiki/                            原生 wiki，本机全量知识
+│   └── index.md
+├── wiki-ext/                        脱敏 wiki，给外部 Agent
+│   └── index.md
+
+L1 skill（不在上面这个 git 里）
+├── SKILL.md                         开机必读
+├── scripts/
+│   └── write-lock.sh               本机多会话写锁
+└── references/
+    ├── init.md                      新机器 / 新 Agent
+    └── maintain.md                  写入、查询、巡检、脱敏的完整步骤</div>
+
+      <p>谁读什么：</p>
+      <table>
+        <tr><th></th><th>本机 Cursor / Claude</th><th>外部 Agent（Aime / Mira / 共享会话）</th></tr>
+        <tr><td>L1</td><td>开机读 SKILL.md</td><td>不需要整仓协议；只使用交付的 wiki-ext</td></tr>
+        <tr><td>sources / wiki</td><td>按第 4 节规则按需读</td><td>没有这些目录</td></tr>
+        <tr><td>wiki-ext</td><td>生成它、检查它；本机查知识仍读 wiki/</td><td>唯一的知识入口</td></tr>
+      </table>
+      <p>跑在这台机器上的 Cursor / Claude Code 视为本机。Aime / Mira，以及你标明给同事的会话，视为外部。分不清时按外部处理。</p>
+
+      <h2 id="protocol">4. 使用说明 · 协议</h2>
+      <p>下面这些规则始终成立。Agent 写入或查询时按这些做，不按「这次方便」放宽。</p>
+
+      <h3>仓必须长什么样</h3>
+      <div class="tree">必须有
+- sources/index.md
+- wiki/index.md
+- wiki-ext/index.md
+
+可以有
+- sources/ 下的原文，或指向本机已有数据的软链接
+- wiki/ 下的页面
+- wiki-ext/ 下与原生对应的对外页
+
+禁止
+- 改 sources 里已经存在的原文（软链接指向的外部仓除外，那是别人的工作树）
+- 把代码仓库、数据集、模型、大体积导出整份拷进 sources/
+- 把整个仓灌进一次对话的上下文
+- 顺着 sources 里的软链接把目标整树灌进上下文
+- 外部 Agent 读 sources/ 或 wiki/
+- 为了对外把 wiki/ 里的真名改掉
+- 人未确认就把 wiki-ext 交给外部，或把整仓 push 到别人能 clone 的网
+- 密钥、私钥、.env 原文进这个仓（三层目录都不放）</div>
+      <p>契约写在 L1 的 SKILL.md 里，不另建 <code>SCHEMA.md</code>。也不用 <code>AGENTS.md</code> 当仓规则文件名，避免被 Cursor / Claude 当成工作区规则自动整份灌入。</p>
+      <p>L1 不管：你个人的行文风格、各环境有哪些产品 skill、当前需求做到哪一步。</p>
+
+      <h3 id="kinds">新内容写到哪</h3>
+      <p>仓里两类正文职责不同，不要混着用。</p>
+      <table>
+        <tr><th></th><th>放什么</th><th>Agent 什么时候读</th><th>例子</th></tr>
+        <tr>
+          <td><code>sources/</code></td>
+          <td>原料。小文件只增不改。代码仓和大体积数据源用软链接指向原位置，知识仓里不保存整份。</td>
+          <td>默认不读。本机查 wiki 对不上时，再按 sources/index.md 去翻；软链接只打开点到的文件，不读整棵目标树。</td>
+          <td>评审妙记、PRD 导出；软链接到本机代码仓</td>
+        </tr>
+        <tr>
+          <td><code>wiki/</code></td>
+          <td>根据 sources 整理后的长期知识：事实、实体、已拍板结论、可复用原则。</td>
+          <td>本机要查「这事怎么定的」：先读 wiki/index.md，再只打开点到的那一页。</td>
+          <td>授权周期字段怎么填；某需求决定用事件表</td>
+        </tr>
+      </table>
+      <p><code>wiki-ext/</code> 不是第三种知识。它是 <code>wiki/</code> 的对外副本。本机查知识仍读 <code>wiki/</code>。</p>
+      <p>先看是不是原料：会议记录、PRD、导出文件 → <code>sources/</code>，不要改写成 wiki 冒充原文。代码仓、本机已有的大目录 → 按下一节记指针，不要拷贝。</p>
+      <p>其余：要查询已定事实或结论 → wiki。要再执行一遍的操作 → 各 Agent / CLI 环境里的产品 skill，<b>不要</b>在本仓做加载门禁。</p>
+
+      <h3 id="write-when">何时写入</h3>
+      <p>没有关键词、斜杠命令或固定话术。开机不写。人说「整理 / 写入 / 巡检」可以触发，但不是门槛。</p>
+      <p><b>拍板即写入。</b>会话里一个下次还会来查的结论已经收成「以这个为准」，当时就写入 <code>wiki/</code> 并 commit，不必等人再下指令。只写结论，不写讨论过程。先对照 <code>wiki/index.md</code>，能并进已有页就并。这一步不生成 <code>wiki-ext/</code>。</p>
+      <table>
+        <tr><th>写</th><th>不写</th></tr>
+        <tr>
+          <td>用户确认了方案、门禁、字段、职责或所有权（走 A、就这样、对齐了、可以落地）。用户纠正了理解，且纠正本身是长期事实。多选已经收成单一结论。</td>
+          <td>编译、安装、rebase、日志、当场会过期的数值，以及还没分出对错的选项。排障里已经能复述的原因、所有权、字段、门禁、生命周期，照写。</td>
+        </tr>
+      </table>
+      <p>原料（妙记、PRD 导出、大源指针）第一次拿到就放入 <code>sources/</code>，不必等拍板。还没进 <code>sources/index.md</code> 的会话树当轮补指针。已经软链的会话树会自己长，不要逐条再记。</p>
+
+      <h3 id="pointers">大源只记指针，不入库整份</h3>
+      <p>知识仓不是第二个代码托管，也不是网盘。真本已经在别处维护的东西，<code>sources/</code> 里只留能找到它的指针，让本机 Agent 需要时顺着去读，而不是再存一份会过期的拷贝。</p>
+      <table>
+        <tr><th></th><th>怎么处理</th><th>例子</th></tr>
+        <tr><td>拷进 sources/ 的小材料</td><td>体积小、没有更好的本机真本，或需要一份不会被上游改掉的快照。</td><td>妙记导出、一页 PRD、聊天摘录</td></tr>
+        <tr><td>软链接 + index 定位</td><td>本机已有、且会继续变的大目录。</td><td>业务代码仓、数据集、日志包、模型文件</td></tr>
+        <tr><td>只写 URL，不下载</td><td>真本在线上，本地没有、也不该镜像整站。</td><td>飞书文档、内网 wiki；index 里记链接和一句话，不把网页另存进仓</td></tr>
+      </table>
+      <p>做软链接时，知识仓 git 只提交这个链接本身（一段路径），不提交链接目标里的文件。同时在 <code>sources/index.md</code> 写清定位，换机器后能重建：</p>
+      <ul>
+        <li>本机路径（软链接指向这里，例如 <code>~/work/capcut</code>）</li>
+        <li>若是 git：remote URL，必要时加默认 branch / commit</li>
+        <li>一句话：这是什么、wiki 为什么要指到它</li>
+      </ul>
+      <div class="tree"># sources/index.md
+
+- [2026-08-19 需求评审妙记](meetings/2026-08-19-review.md) — 授权表字段讨论（入库副本）
+- [PRD 原文](prd/auth-period.docx) — 产品文档导出（入库副本）
+- [CapCut Android](repos/capcut) — 软链接 → ~/work/capcut；git: ssh://…/capcut.git</div>
+      <p>Agent 写入时：对代码仓和大目录执行 <code>ln -s</code> 指向已有路径，禁止 <code>cp -R</code> / clone 进 <code>sources/</code>。读的时候只打开 wiki 或 index 点到的那个文件，禁止把软链接目标整仓读进上下文。</p>
+      <p>软链接断了（换机器、目录搬家）：按 index 里的 git URL 和路径重建链接，不要改去拷一份进来顶上。绝对路径因机器而异，以 index 里的定位为准，不要假定别人 clone 知识仓后链接一定能用。</p>
+
+      <h3 id="loadout">产品 skill 不归 L1</h3>
+      <p>2026-09-10 起，L1 不再用 <code>LOADOUT.md</code> 或 always-on / recommend / catalog 控制产品 skill。多 CLI、多身份下，仓内账本适配不了当前 Agent 环境。</p>
+      <p>产品 skill 由 Cursor / Claude Code / 各 CLI 自己发现和加载。L1 只约定知识仓。不要在开机时读 <code>skills/LOADOUT.md</code>。</p>
+
+      <h3 id="query-rule">怎么查知识</h3>
+      <p>不要对整个 <code>~/.ai-space/</code> 做全目录搜索当默认路径。</p>
+      <table>
+        <tr><th>谁</th><th>查什么</th><th>怎么走</th></tr>
+        <tr><td>本机</td><td>知识</td><td><code>wiki/index.md</code> → 只打开点到的页 → 对不上再读 <code>sources/</code>。默认不读 sources。若 source 是软链接，只读被点到的目标文件，不读整棵树。</td></tr>
+        <tr><td>外部</td><td>知识</td><td>只走 <code>wiki-ext/index.md</code>。对不上就停，不准去读原生 wiki 或 sources。</td></tr>
+      </table>
+      <p>每个 index 每行 = 链接 + 一句话，用来判断要不要点进去。这句话必须能把该页和相邻页区分开，否则巡检里算索引效率不合格。</p>
+      <div class="tree"># wiki/index.md（本机）
+
+- [授权周期表](entities/auth-period.md) — 字段含义与写入规则
+- [强插能力](topics/feed-insert.md) — story_recommend 承接 UG 素材的通用机制
+
+# wiki-ext/index.md（外部）
+结构相同，但只列出已经生成过、且通过对外禁止表的页。
+原生有、这里没有的页，对外部当作不存在。
+
+# sources/index.md
+
+- [2026-08-19 需求评审妙记](meetings/2026-08-19-review.md) — 授权表字段讨论（入库副本）
+- [CapCut Android](repos/capcut) — 软链接 → ~/work/capcut；git: ssh://…/capcut.git</div>
+
+      <h3 id="redact-rule">什么可以给外部看</h3>
+      <p>「生成对外副本」= 按下面的分类和改法，从 <code>wiki/</code> 写出 <code>wiki-ext/</code>。原生页不动。</p>
+      <p>这不是少给几个 sources 文件——sources 本来就不给外部。也不是把本机 wiki 改干净。</p>
+      <div class="cards">
+        <article class="card">
+          <div class="k gate">默认不给</div>
+          <p>没生成、清单没列全、你没确认 → 不把 wiki-ext 交给外部，也不把它放到别人能 clone 的网。</p>
+        </article>
+        <article class="card">
+          <div class="k gate">不改原生</div>
+          <p>禁止为了对外把 wiki/ 里的真名改掉。改只发生在 wiki-ext/。</p>
+        </article>
+        <article class="card">
+          <div class="k gate">只给清单里扫过的页</div>
+          <p>没点名、没扫过的原生页不准出现在 wiki-ext。sources/ 永不进入。</p>
+        </article>
+        <article class="card">
+          <div class="k gate">按同事可见性把关</div>
+          <p>wiki-ext 的读者 = 能用该外部 Agent 的同事。敏感个人和密钥必须在生成时去掉，不能指望对方少读几个文件。</p>
+        </article>
+      </div>
+      <p>本机读 wiki、只整理原生 wiki、本地 commit：都不必生成对外副本。把 <code>wiki-ext/</code> 写进知识仓属于数据维护，Agent 按协议生成并可以自行提交。拷给 Aime / Mira / 共享会话，或把 wiki-ext 放到别人能 clone 的 remote：必须等人确认之后再交出去。</p>
+      <p>按段落分类。一个原生页可以同时有几类内容；wiki-ext 只保留允许留下的信息。</p>
+      <table>
+        <tr><th>这类内容</th><th>怎么判断</th><th>进 wiki-ext？</th></tr>
+        <tr><td>密钥</td><td>这段能否直接用来登录、调接口、解密？</td><td>禁止。原生 wiki 也不该有；发现了两边都删，停外发直到清掉。</td></tr>
+        <tr><td>司内密文</td><td>离开公司或给未授权同事，是否泄密或违规？</td><td>允许（读者是工作侧同事）。</td></tr>
+        <tr><td>工作身份</td><td>是否只是履职需要的人名与职责？</td><td>允许。</td></tr>
+        <tr><td>敏感个人</td><td>是否与履职无关，或仅少数人应知的人事/私生活？</td><td>禁止。包括 1on1 原文、绩效薪酬晋升、家庭住址电话、健康、私人 git 与账号。</td></tr>
+        <tr><td>通用</td><td>拿掉司内密文和敏感个人后仍然成立？</td><td>允许。</td></tr>
+      </table>
+      <p>说不清算哪类、说不清飞书链能否给同事 → 按禁止处理。不准先给出去再补。</p>
+
+      <h3 id="redact-how">怎么做信息脱敏</h3>
+      <p>分类之后，对每一处禁止内容必须选用下面四种改法之一，并在报告里写明用了哪一种。不准只标「已脱敏」却看不出改了什么。</p>
+      <table>
+        <tr><th>改法</th><th>做什么</th><th>什么时候用</th></tr>
+        <tr><td>删除</td><td>这句或这段不出现在 wiki-ext。</td><td>对外页不需要这条信息，或信息本身不能给同事（密钥、薪酬、住址、健康）。</td></tr>
+        <tr><td>改写留结论</td><td>丢掉私密过程，留下同事需要的决定或事实。</td><td>真正有用的是结论，包着它的是 1on1 原文、私下判断、情绪。</td></tr>
+        <tr><td>泛化</td><td>把具体值换成角色、类别或量级，且不能从结果反推出原文。</td><td>需要有个指代（本机路径、数量级），但不需要真值。</td></tr>
+        <tr><td>整页不生成</td><td>wiki-ext 里没有这一页，index 也不列。</td><td>拿掉禁止内容后，这页不再成立，或只剩空壳。</td></tr>
+      </table>
+      <p>挑选顺序：不需要这条信息 → 删除；需要结论不需要过程 → 改写留结论；需要指代不需要真值 → 泛化；整页离开禁止内容就不成立 → 整页不生成。四种都做不到 → 该页移出清单，或整次取消。不要硬编一版「看起来干净」的对外稿。</p>
+
+      <h4>按类别怎么改</h4>
+      <table>
+        <tr><th>类别</th><th>做法</th><th>对外页可以写成</th><th>不准写成</th></tr>
+        <tr>
+          <td>密钥</td>
+          <td>删除。原生 wiki 里若发现，也删，并停止外发直到清掉。</td>
+          <td>不出现。需要说明有凭证时写「凭证存在本机密钥管理，不入库」。</td>
+          <td><code>ak***xyz</code>、保留后四位、编一个假 token、写在注释或代码块里。</td>
+        </tr>
+        <tr>
+          <td>敏感个人 · 1on1 / 私下判断</td>
+          <td>不抄对话和私人理由。若里面有工作决定，改写留结论。</td>
+          <td>「PM 张三要求加宽表字段。」</td>
+          <td>「1on1 里他说……」；「我私下觉得会影响陪家人的时间。」</td>
+        </tr>
+        <tr>
+          <td>敏感个人 · 人事与生活</td>
+          <td>删除整段。绩效、薪酬、晋升材料、家庭住址电话、健康、私人 git、私人账号，一律不改写、不泛化数字。</td>
+          <td>不出现。</td>
+          <td>「薪酬大约 xx 万」；「住在某小区」；私人仓库地址打码。</td>
+        </tr>
+        <tr>
+          <td>工作身份</td>
+          <td>履职需要的姓名和职责原样保留。wiki-ext 的读者是同事，不必改成「某 PM」。</td>
+          <td>「PM 张三」「接口 owner 李四」。</td>
+          <td>把履职姓名无故改成「某同事」。若这段其实在讲私人关系（「张三是我大学同学」），按敏感个人删除。</td>
+        </tr>
+        <tr>
+          <td>司内密文</td>
+          <td>需求号、未公开方案、能给同事用的内网/飞书链接，保留。</td>
+          <td>「需求 N123」；完整飞书文档链（确认能给同事）。</td>
+          <td>说不清能否给同事的链接还留着。本机路径 <code>/Users/张三/...</code> 要删掉用户名，改成「本机仓库」或删除。</td>
+        </tr>
+        <tr>
+          <td>通用</td>
+          <td>原样保留。不要顺手改技术结论的措辞。</td>
+          <td>「原则是宽表不如事件表。」</td>
+          <td>为了「更像对外文档」把结论改成另一套说法。</td>
+        </tr>
+      </table>
+
+      <h4>链接和结构</h4>
+      <ul>
+        <li>wiki-ext 页不要链到 <code>sources/</code> 或 <code>wiki/</code>。只链其他已经生成的 wiki-ext 页。</li>
+        <li>原生页指向的某页若这次没有生成对外副本：去掉该链，或改成不带链接的文字「见内部页（未对外）」。</li>
+        <li>同一人在多页 wiki-ext 里称谓要一致：履职场景都用真名，不要一页真名一页「某 PM」。</li>
+      </ul>
+
+      <h4>改完怎么验收</h4>
+      <p>对照原生页逐段看 wiki-ext：禁止内容为零；工作结论没有被改歪；每处改动能在报告里找到「原文摘录 → 类别 → 改法」。做不到这三项，不算脱敏完成。</p>
+
+      <h3 id="lint-rule">巡检查什么</h3>
+      <p>巡检有三条轴，都要过。只修死链、不看目录能不能用、不按脱敏规则核对 <code>wiki-ext/</code>，都不算做完。</p>
+      <table>
+        <tr><th>轴</th><th>问的问题</th><th>不合格时会怎样</th></tr>
+        <tr><td>正确性</td><td>仓里的事实和结构是否自洽，有没有违反写入、指针协议。</td><td>查到假结论、改坏的原文、目录对不上、大源整份拷进来。</td></tr>
+        <tr><td>索引效率</td><td>只读三份 index，能否选对下一篇，而不用扫整仓。</td><td>每次都把半个仓打开；或有页永远找不到。</td></tr>
+        <tr><td>脱敏</td><td>已生成的 <code>wiki-ext/</code> 是否按「什么可以给外部看 / 怎么做信息脱敏」从原生 wiki 投影；原生层是否夹带密钥。</td><td>外部若拿到这份 wiki-ext，会看到 1on1、密钥、敏感个人，或看到和原生对不上的另一套说法。</td></tr>
+      </table>
+      <p>不是开机必跑。写入后结构明显坏了、刚收进一批材料、刚更新过 wiki / wiki-ext、或要检查知识仓时做。Agent 按协议直接改并提交，不必等人批准。</p>
+      <p>巡检里的脱敏检查，是把仓内 <code>wiki-ext/</code> 修到符合协议。能不能把这份目录拷给外部 Agent，仍要单独确认，不因巡检绿灯而放行。</p>
+
+      <h4>正确性</h4>
+      <table>
+        <tr><th>对象</th><th>不合格</th></tr>
+        <tr><td>sources</td><td>有文件或软链接不在 index；index 指向不存在的路径；改了已有入库副本；进了密钥 / <code>.env</code>；把代码仓或大数据源整份拷进来；软链接损坏且 index 没有可重建的 git URL / 路径</td></tr>
+        <tr><td>wiki</td><td>有页不在 index；index 或正文里有打不开的链接；新 source 没有挂到相关 wiki；wiki 改了 sources 里的入库原文；同一事实两页互相矛盾且未标明以谁为准</td></tr>
+        <tr><td>wiki-ext</td><td>有页不在 index；死链；链到 <code>sources/</code> 或 <code>wiki/</code>。禁止内容、投影是否忠实，归下面「脱敏」轴，不在这里重复打勾就算过。</td></tr>
+      </table>
+
+      <h4>索引效率</h4>
+      <p>查询协议规定：先读 index，再只打开点到的那一篇。巡检要验证这条路走得通、走得快。</p>
+      <table>
+        <tr><th>对象</th><th>不合格</th></tr>
+        <tr><td>所有 index</td><td>有页/文件在目录里却不在 index（找不到）；index 有条目但目标不存在（空跑）；一行只有文件名没有说明，或两行说明几乎一样，无法判断该开哪篇</td></tr>
+        <tr><td>wiki/index.md</td><td>条目一长串没有分组，读完 index 仍不知道去哪；一页塞了多个互不相关主题，index 无法指向「这一问该看哪一节」；能并进已有主题页的内容却新建了孤岛页</td></tr>
+        <tr><td>sources/index.md</td><td>软链接只写了仓库根，没写 wiki 实际用到的子路径或文件，Agent 只能把整树当原文；小材料重复入库多份、index 无法区分哪份是当前锚点</td></tr>
+        <tr><td>wiki-ext/index.md</td><td>列出了未生成的原生页；说明里带了敏感个人或密钥；条目比原生 index 更含糊，外部 Agent 更难选页</td></tr>
+      </table>
+      <p>修索引效率时：改一句话说明、给 index 加分组小标题、合并孤岛页、拆厨房水槽页、给大源 index 补上具体子路径。不要靠「把更多正文写进 index」来解决——index 仍应是链接 + 一句能做决定的话。</p>
+
+      <h4 id="lint-redact">脱敏</h4>
+      <p>对照「什么可以给外部看」和「怎么做信息脱敏」逐项核对。范围：<code>wiki-ext/</code> 里已有的页，以及对应的原生 <code>wiki/</code> 页；原生层还要扫密钥（密钥两边都不准有）。</p>
+      <table>
+        <tr><th>检查项</th><th>不合格</th><th>怎么修</th></tr>
+        <tr><td>密钥</td><td><code>wiki/</code> 或 <code>wiki-ext/</code> 里出现可登录、调接口、解密的原文；或打码后仍能复原的半截。</td><td>两边都删。停外发直到清掉。不准用假 token 顶上。</td></tr>
+        <tr><td>wiki-ext 禁止内容</td><td>1on1 原文、私下判断、绩效薪酬晋升、家庭住址电话、健康、私人 git / 账号仍留在对外页；index 说明里也带这些。</td><td>按改法处理：删除，或改写留结论（「PM 张三要求加宽表字段」）。人事与生活整段删除，不泛化数字。</td></tr>
+        <tr><td>投影是否从原生出</td><td>wiki-ext 有页、wiki 没有对应页；或对外页讲的是另一套故事，对不上原生结论。</td><td>从原生重新投影。禁止为了过检手写一份「干净稿」。原生没有的页，从 wiki-ext 和它的 index 拿掉。</td></tr>
+        <tr><td>原生已改、对外未跟</td><td>wiki 改过的页，wiki-ext 仍是旧正文，或仍含已过时的禁止内容。</td><td>按当前原生页重做投影，报告里写原文摘录、类别、改法。</td></tr>
+        <tr><td>改法用错</td><td>履职姓名被无故改成「某 PM」；飞书链说不清还留着；本机 <code>/Users/姓名/...</code> 还在；对外页链到 sources 或 wiki。</td><td>工作身份保留真名；说不清的链接删 URL；路径改成「本机仓库」或删除；链接只指向其他 wiki-ext 页。</td></tr>
+        <tr><td>覆盖缺口</td><td>某页已对外交付过，或 index 仍列着，但文件已不在 / 从未按禁止表扫过。</td><td>补做投影，或从 wiki-ext/index 删除该条。没有 wiki-ext 的原生页可以只留本机，但 index 不准列它。</td></tr>
+      </table>
+      <p>脱敏轴过关：wiki-ext 里禁止内容为零；每页能指回原生页且结论没有被改歪；每处修改能对应到一种改法。这仍不等于可以把目录拷给外部——拷贝前还要人确认。</p>
+
+      <h3 id="git-rule">改动提交到哪</h3>
+      <table>
+        <tr><th>改什么</th><th>提交到哪</th></tr>
+        <tr><td>sources / wiki / wiki-ext</td><td>知识仓 <code>~/.ai-space</code></td></tr>
+        <tr><td>L1 的 SKILL.md、init.md、maintain.md</td><td>L1 自己的 git</td></tr>
+      </table>
+      <p>写入先跑 L1 的 <code>scripts/write-lock.sh prepare</code>，commit 完 <code>release</code>。同一时刻只允许一个写入者。没有 remote 不要 pull；有 remote 才 <code>git pull --ff-only</code>。脏工作区由拿到锁的人恢复并提交，不要全员停写。未合并冲突才停。不 force push。知识仓的 remote 必须只有你能读。</p>
+      <p>仍要等人确认的，只有把 <code>wiki-ext/</code> 拷给外部 Agent，或把整仓 push 到别人能 clone 的网。那是外发，不是仓内维护。</p>
+
+      <h2 id="flows">5. 使用说明 · 流程</h2>
+      <p>维护知识仓不规定必须用自然语言。Agent 按协议改文件并提交；人也可以直接改。会话里用一句话触发也可以，但不是门槛。完整步骤写在 L1 的 <code>references/maintain.md</code>，做到那一步再读，不必开机就读。</p>
+
+      <h3 id="flow-init">新机器 / 新 Agent</h3>
+      <ol>
+        <li>按该产品的方式安装 L1。</li>
+        <li>把知识仓的 git 地址交给已经能读 L1 的 Agent。</li>
+        <li>Agent 读 <code>references/init.md</code>，把仓 clone 到 <code>~/.ai-space/</code>（这里必须是这个仓的工作副本）。</li>
+        <li>把 L1 装进当前产品的 skill 路径，并写上开机钩子：新对话开始时 Read L1 的 SKILL.md。</li>
+        <li>给外部 Agent 不要 clone <code>~/.ai-space/</code>，只导出已确认的 <code>wiki-ext/</code>。</li>
+      </ol>
+
+      <h3 id="flow-boot">一次新对话开始时</h3>
+      <h4>本机</h4>
+      <div class="flow">
+        <ol>
+          <li>读 L1 的 SKILL.md。</li>
+          <li>知识仓根目录是 <code>~/.ai-space/</code>。没有这个仓就停，先做上一节初始化。</li>
+          <li>不要把 wiki / sources 整仓灌进上下文。开机先不打开 maintain.md。</li>
+          <li>开机到此不是会话结束。可复述的结论当轮写入 wiki。新拿到的妙记、PRD、导出，或还没进 sources/index.md 的会话树，当轮放入 sources。已经软链的会话树不要逐条再记。不要等用户说「记下来」。</li>
+        </ol>
+      </div>
+      <h4>外部</h4>
+      <div class="flow">
+        <ol>
+          <li>只接收 wiki-ext 的一份拷贝（会话临时目录即可）。</li>
+          <li>查知识只走 wiki-ext/index.md。</li>
+          <li>路径里如果出现 sources/ 或 wiki/，当作不存在，不准去读。</li>
+        </ol>
+      </div>
+
+      <h3 id="flow-write">往仓里写东西</h3>
+      <p>拍板即写入，见 <a href="#write-when">何时写入</a>。不必等人说「整理 wiki」。</p>
+      <h4>放入原文</h4>
+      <ol>
+        <li>先判断是小材料还是大源。代码仓、数据集、模型、大体积导出：在 <code>sources/</code> 下建软链接指向本机已有路径，并在 <code>sources/index.md</code> 写下路径、git URL（若有）和一句话。禁止把整份拷进仓。</li>
+        <li>飞书 / 内网文档：只在 index 里记 URL 和一句话，不下载整份进仓。</li>
+        <li>妙记、一页 PRD、摘录：文件放进 <code>sources/</code>，只增不改，更新 index。</li>
+        <li>密钥、私钥、<code>.env</code> 原文不准进；也不要把它们所在的目录整棵链进来。</li>
+        <li>自己检查 git 里新增的是软链接（一段路径）而不是目标目录的文件，然后可以 commit。</li>
+      </ol>
+      <h4>整理进原生 wiki</h4>
+      <p>把新材料写进 <code>wiki/</code>：能并进已有页就并，否则新建，改 <code>wiki/index.md</code>。新页链到相关旧页，旧页也链回来，避免多一个找不到的文件。</p>
+      <ol>
+        <li>先 <code>write-lock.sh prepare</code>（无 remote 不 pull；脏仓恢复提交，不要停写）。</li>
+        <li>写入页面、补双向链接、更新 index。</li>
+        <li>这一步可以留真名、司内细节、1on1。不要在这里做脱敏。</li>
+        <li>可以自行 commit，然后 <code>release</code>。若这次要把知识交给外部，再走「生成脱敏 wiki」，禁止把 <code>wiki/</code> 直接拷走。</li>
+      </ol>
+      <p>需求里如果抽出了以后还能用的原则，单独写到主题页并链回当次决策页；当次取值和拍板过程留在较具体的那一页。不要只把原则埋在某一篇需求记录里。</p>
+      <h3 id="flow-lint">巡检</h3>
+      <p>一次巡检必须三条轴都跑：先索引效率（只读目录），再正确性（结构核对），再脱敏（对照原生页和禁止表核对 wiki-ext）。可以按本次改动收窄正文范围，但三份 index 要整份看。</p>
+      <div class="flow">
+        <ol>
+          <li>定范围：整仓，或「某次写入涉及的页 + 它们所在的 index」。凡范围内已有 wiki-ext 页，脱敏轴必查对应原生页。</li>
+          <li><b>索引效率。</b>只打开三份 index。对每个条目问：只靠这一行，能不能决定要不要打开。记下含糊、撞车、无分组、大源只指到仓库根、wiki-ext 目录带敏感词或比原生更难用。</li>
+          <li><b>正确性。</b>对照磁盘：index 与文件是否一一对应；链接是否打得开；入库副本是否被改过；有没有大源整份拷贝；软链接能否解析，不能解析时 index 有没有可重建定位；wiki 是否改了 sources 原文；同一事实是否两页打架且未标明；wiki-ext 是否链到原生层。</li>
+          <li><b>脱敏。</b>对范围内每个 wiki-ext 页：机械扫描（密钥形态、1on1、绩效薪酬、家人住址、<code>/Users/</code>、<code>.env</code> 等，同生成流程）；通读后按禁止表打档；对照原生页看是否投影、结论有没有被改歪、改法有没有用错。原生 wiki 同样扫密钥，命中则两边都删。已对外交付过、或 index 仍列着、却未扫过的页，记为覆盖缺口。</li>
+          <li>按协议修。效率问题优先改目录说明和分组。正确性按写入规则改。脱敏按「怎么做信息脱敏」四种改法改 wiki-ext（密钥同时改原生），不要手写一套对不上的对外稿。</li>
+          <li>再读一遍三份 index，抽查刚修过的 wiki-ext 页。</li>
+          <li>自行 commit。记录：范围、效率问题、正确性问题、脱敏命中（原文摘录 → 类别 → 改法）、改了哪些文件。仓内提交不必等人。要把 wiki-ext 拷给外部，仍走外发确认。</li>
+        </ol>
+      </div>
+      <p>修完算过关：正确性、脱敏表里没有未处理项；抽一个以后会问的问题，只靠 index 能选到唯一合理的下一篇（或明确「仓里没有」）。脱敏未过关不得进入外发；过关也还要等人确认才能拷贝。</p>
+
+      <h3 id="flow-redact">生成脱敏 wiki 并交给外部</h3>
+      <p>一次只处理一份列清楚的页面清单（原生 wiki 里哪些页要反映到 wiki-ext）。不要说「把整个仓脱敏一下」却不给路径。</p>
+      <ul>
+        <li>清单来自本次要同步的页：点名的路径，或相对上次已提交 wiki-ext 的 diff。除非明确要全量，否则不要默认整个 <code>wiki/</code>。</li>
+        <li>若点的是目录，报告里必须展开成文件列表。没展开就失败。</li>
+        <li>清单里出现 <code>sources/</code> → 整次失败。不要对原文做脱敏再外发。</li>
+      </ul>
+      <div class="flow">
+        <ol>
+          <li>说明本次是更新 wiki-ext 给外部 Agent。没说清就停，问一句。</li>
+          <li>列出将生成的每一个原生页路径，排除 sources。</li>
+          <li>对每个文件做机械扫描，命中必须写进报告，不能只写「看起来干净」。至少查：password / token / secret / Bearer / BEGIN PRIVATE / AKSK 形态；<code>/Users/</code>、<code>~/.ssh</code>、<code>.env</code>；1on1、绩效、薪酬、晋升、家人、住址、私人手机号。内网域名表写在 maintain 附录（至少 <code>*.bytedance.net</code>、<code>code.byted.org</code>）。误报要写「误报 + 理由」。</li>
+          <li>通读每段，按「什么可以给外部看」分类。扫描没扫到但属于敏感个人或密钥的，同样记下来。</li>
+          <li>只改 wiki-ext。对每一处禁止内容，按「怎么做信息脱敏」选一种改法（删除 / 改写留结论 / 泛化 / 整页不生成）。做不到、而你又要求必须给出去 → 整次取消。原生页保持原样。</li>
+          <li>更新 wiki-ext/index.md，只保留实际写出的页。对外页里的链接只指向其他 wiki-ext 页。未处理项为空即可 commit 进知识仓。</li>
+          <li>写报告（可写在会话里或维护记录里）：清单；每条命中的原文摘录、类别、改法、改成了什么。</li>
+          <li>只有在要把 wiki-ext 拷给外部 Agent 时，才等人确认「可以外发」。未确认不准拷贝。仓内生成和提交不必等这一步。</li>
+        </ol>
+      </div>
+      <p>可以交给外部的条件：未处理项为空，你已确认，对方实际拿到的文件都在 wiki-ext 里。跳步骤、夹带原生页、改原生、「大部分过了就先给」、只做正确性巡检没跑脱敏轴就当可以外发，都不算过关。</p>
+      <p>Agent 还禁止：未确认就开始拷贝；把 <code>~/.ai-space/</code> 整仓交给外部；报告没有摘录；密钥打码后仍把能复原的半截写进 wiki-ext。</p>
+      <h4>同一段话怎么改</h4>
+      <p>原生 wiki：「需求 N123：和 PM 张三 1on1 里他说加宽表字段；设计在飞书文档；token=abc；我私下觉得这会影响陪家人的时间；原则是宽表不如事件表。」</p>
+      <table>
+        <tr><th>片段</th><th>类别</th><th>改法</th><th>wiki-ext 里写成</th></tr>
+        <tr><td>需求 N123；飞书文档链</td><td>司内密文</td><td>保留</td><td>原样</td></tr>
+        <tr><td>PM 张三</td><td>工作身份</td><td>保留</td><td>「PM 张三」</td></tr>
+        <tr><td>1on1 里他说加宽表字段</td><td>敏感个人包着工作结论</td><td>改写留结论</td><td>「PM 张三要求加宽表字段」</td></tr>
+        <tr><td>token=abc</td><td>密钥</td><td>删除（原生 wiki 也删）</td><td>不出现</td></tr>
+        <tr><td>会影响陪家人的时间</td><td>敏感个人</td><td>删除</td><td>不出现</td></tr>
+        <tr><td>宽表不如事件表</td><td>通用</td><td>保留</td><td>原样</td></tr>
+      </table>
+      <p>对外页整段写成：「需求 N123：PM 张三要求加宽表字段；设计在飞书文档；原则是宽表不如事件表。」</p>
+    </div>
+  </div>
+</body>
+</html>
