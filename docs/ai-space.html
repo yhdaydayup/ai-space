@@ -461,103 +461,20 @@ L1 skill（不在上面这个 git 里）
       <p>仍要等人确认的，只有把 <code>wiki-ext/</code> 拷给外部 Agent，或把整仓 push 到别人能 clone 的网。那是外发，不是仓内维护。</p>
 
       <h2 id="flows">5. 使用说明 · 流程</h2>
-      <p>维护知识仓不规定必须用自然语言。Agent 按协议改文件并提交；人也可以直接改。会话里用一句话触发也可以，但不是门槛。完整步骤写在 L1 的 <code>references/maintain.md</code>，做到那一步再读，不必开机就读。</p>
+      <p>这一节只标顺序和该读哪一份。步骤不在这里再写一遍。维护不规定必须用自然语言。Agent 按协议改文件并提交；人也可以直接改。会话里用一句话触发也可以，但不是门槛。</p>
 
       <h3 id="flow-init">新机器 / 新 Agent</h3>
-      <ol>
-        <li>按该产品的方式安装 L1。</li>
-        <li>把知识仓的 git 地址交给已经能读 L1 的 Agent。</li>
-        <li>Agent 读 <code>references/init.md</code>，把仓 clone 到 <code>~/.ai-space/</code>（这里必须是这个仓的工作副本）。</li>
-        <li>把 L1 装进当前产品的 skill 路径，并写上开机钩子：新对话开始时 Read L1 的 SKILL.md。</li>
-        <li>给外部 Agent 不要 clone <code>~/.ai-space/</code>，只导出已确认的 <code>wiki-ext/</code>。</li>
-      </ol>
+      <p>步骤在 L1 的 <code>references/init.md</code>。仓的工作副本必须是 <code>~/.ai-space/</code>。给外部 Agent 不要 clone 这个仓，只导出已确认的 <code>wiki-ext/</code>。</p>
 
       <h3 id="flow-boot">一次新对话开始时</h3>
-      <h4>本机</h4>
-      <div class="flow">
-        <ol>
-          <li>读 L1 的 SKILL.md。</li>
-          <li>知识仓根目录是 <code>~/.ai-space/</code>。没有这个仓就停，先做上一节初始化。</li>
-          <li>不要把 wiki / sources 整仓灌进上下文。开机先不打开 maintain.md。</li>
-          <li>开机到此不是会话结束。可复述的结论当轮写入 wiki。新拿到的妙记、PRD、导出，或还没进 sources/index.md 的会话树，当轮放入 sources。已经软链的会话树不要逐条再记。不要等用户说「记下来」。</li>
-        </ol>
-      </div>
-      <h4>外部</h4>
-      <div class="flow">
-        <ol>
-          <li>只接收 wiki-ext 的一份拷贝（会话临时目录即可）。</li>
-          <li>查知识只走 wiki-ext/index.md。</li>
-          <li>路径里如果出现 sources/ 或 wiki/，当作不存在，不准去读。</li>
-        </ol>
-      </div>
+      <p>本机读 SKILL.md，按里面的开机步骤做。外部只使用已确认的 wiki-ext 拷贝；路径里出现 <code>sources/</code> 或 <code>wiki/</code>，当作不存在。</p>
 
       <h3 id="flow-write">往仓里写东西</h3>
-      <p>拍板即写入，见 <a href="#write-when">何时写入</a>。不必等人说「整理 wiki」。</p>
-      <h4>放入原文</h4>
-      <ol>
-        <li>先判断是小材料还是大源。代码仓、数据集、模型、大体积导出：在 <code>sources/</code> 下建软链接指向本机已有路径，并在 <code>sources/index.md</code> 写下路径、git URL（若有）和一句话。禁止把整份拷进仓。</li>
-        <li>飞书 / 内网文档：只在 index 里记 URL 和一句话，不下载整份进仓。</li>
-        <li>妙记、一页 PRD、摘录：文件放进 <code>sources/</code>，只增不改，更新 index。</li>
-        <li>密钥、私钥、<code>.env</code> 原文不准进；也不要把它们所在的目录整棵链进来。</li>
-        <li>自己检查 git 里新增的是软链接（一段路径）而不是目标目录的文件，然后可以 commit。</li>
-      </ol>
-      <h4>整理进原生 wiki</h4>
-      <p>把新材料写进 <code>wiki/</code>：能并进已有页就并，否则新建，改 <code>wiki/index.md</code>。新页链到相关旧页，旧页也链回来，避免多一个找不到的文件。</p>
-      <ol>
-        <li>先 <code>write-lock.sh prepare</code>（无 remote 不 pull；脏仓恢复提交，不要停写）。</li>
-        <li>写入页面、补双向链接、更新 index。</li>
-        <li>这一步可以留真名、司内细节、1on1。不要在这里做脱敏。</li>
-        <li>可以自行 commit，然后 <code>release</code>。若这次要把知识交给外部，再走「生成脱敏 wiki」，禁止把 <code>wiki/</code> 直接拷走。</li>
-      </ol>
-      <p>需求里如果抽出了以后还能用的原则，单独写到主题页并链回当次决策页；当次取值和拍板过程留在较具体的那一页。不要只把原则埋在某一篇需求记录里。</p>
+      <p>何时写见 <a href="#write-when">何时写入</a>。做法只在 <code>maintain.md</code>：先拿锁，再分类，再写入。一次维护共用一把锁，结束再 release。</p>
       <h3 id="flow-lint">巡检</h3>
-      <p>一次巡检必须三条轴都跑：先索引效率（只读目录），再正确性（结构核对），再脱敏（对照原生页和禁止表核对 wiki-ext）。可以按本次改动收窄正文范围，但三份 index 要整份看。</p>
-      <div class="flow">
-        <ol>
-          <li>定范围：整仓，或「某次写入涉及的页 + 它们所在的 index」。凡范围内已有 wiki-ext 页，脱敏轴必查对应原生页。</li>
-          <li><b>索引效率。</b>只打开三份 index。对每个条目问：只靠这一行，能不能决定要不要打开。记下含糊、撞车、无分组、大源只指到仓库根、wiki-ext 目录带敏感词或比原生更难用。</li>
-          <li><b>正确性。</b>对照磁盘：index 与文件是否一一对应；链接是否打得开；入库副本是否被改过；有没有大源整份拷贝；软链接能否解析，不能解析时 index 有没有可重建定位；wiki 是否改了 sources 原文；同一事实是否两页打架且未标明；wiki-ext 是否链到原生层。</li>
-          <li><b>脱敏。</b>对范围内每个 wiki-ext 页：机械扫描（密钥形态、1on1、绩效薪酬、家人住址、<code>/Users/</code>、<code>.env</code> 等，同生成流程）；通读后按禁止表打档；对照原生页看是否投影、结论有没有被改歪、改法有没有用错。原生 wiki 同样扫密钥，命中则两边都删。已对外交付过、或 index 仍列着、却未扫过的页，记为覆盖缺口。</li>
-          <li>按协议修。效率问题优先改目录说明和分组。正确性按写入规则改。脱敏按「怎么做信息脱敏」四种改法改 wiki-ext（密钥同时改原生），不要手写一套对不上的对外稿。</li>
-          <li>再读一遍三份 index，抽查刚修过的 wiki-ext 页。</li>
-          <li>自行 commit。记录：范围、效率问题、正确性问题、脱敏命中（原文摘录 → 类别 → 改法）、改了哪些文件。仓内提交不必等人。要把 wiki-ext 拷给外部，仍走外发确认。</li>
-        </ol>
-      </div>
-      <p>修完算过关：正确性、脱敏表里没有未处理项；抽一个以后会问的问题，只靠 index 能选到唯一合理的下一篇（或明确「仓里没有」）。脱敏未过关不得进入外发；过关也还要等人确认才能拷贝。</p>
-
+      <p>不是开机必跑。步骤只在 <code>maintain.md</code> 的「巡检」。三条轴都要过，三份 index 整份看。巡检用分类表和扫描附录，不要为此进入生成。巡检过关不等于可以外发。</p>
       <h3 id="flow-redact">生成脱敏 wiki 并交给外部</h3>
-      <p>一次只处理一份列清楚的页面清单（原生 wiki 里哪些页要反映到 wiki-ext）。不要说「把整个仓脱敏一下」却不给路径。</p>
-      <ul>
-        <li>清单来自本次要同步的页：点名的路径，或相对上次已提交 wiki-ext 的 diff。除非明确要全量，否则不要默认整个 <code>wiki/</code>。</li>
-        <li>若点的是目录，报告里必须展开成文件列表。没展开就失败。</li>
-        <li>清单里出现 <code>sources/</code> → 整次失败。不要对原文做脱敏再外发。</li>
-      </ul>
-      <div class="flow">
-        <ol>
-          <li>说明本次是更新 wiki-ext 给外部 Agent。没说清就停，问一句。</li>
-          <li>列出将生成的每一个原生页路径，排除 sources。</li>
-          <li>对每个文件做机械扫描，命中必须写进报告，不能只写「看起来干净」。至少查：password / token / secret / Bearer / BEGIN PRIVATE / AKSK 形态；<code>/Users/</code>、<code>~/.ssh</code>、<code>.env</code>；1on1、绩效、薪酬、晋升、家人、住址、私人手机号。内网域名表写在 maintain 附录（至少 <code>*.bytedance.net</code>、<code>code.byted.org</code>）。误报要写「误报 + 理由」。</li>
-          <li>通读每段，按「什么可以给外部看」分类。扫描没扫到但属于敏感个人或密钥的，同样记下来。</li>
-          <li>只改 wiki-ext。对每一处禁止内容，按「怎么做信息脱敏」选一种改法（删除 / 改写留结论 / 泛化 / 整页不生成）。做不到、而你又要求必须给出去 → 整次取消。原生页保持原样。</li>
-          <li>更新 wiki-ext/index.md，只保留实际写出的页。对外页里的链接只指向其他 wiki-ext 页。未处理项为空即可 commit 进知识仓。</li>
-          <li>写报告（可写在会话里或维护记录里）：清单；每条命中的原文摘录、类别、改法、改成了什么。</li>
-          <li>只有在要把 wiki-ext 拷给外部 Agent 时，才等人确认「可以外发」。未确认不准拷贝。仓内生成和提交不必等这一步。</li>
-        </ol>
-      </div>
-      <p>可以交给外部的条件：未处理项为空，你已确认，对方实际拿到的文件都在 wiki-ext 里。跳步骤、夹带原生页、改原生、「大部分过了就先给」、只做正确性巡检没跑脱敏轴就当可以外发，都不算过关。</p>
-      <p>Agent 还禁止：未确认就开始拷贝；把 <code>~/.ai-space/</code> 整仓交给外部；报告没有摘录；密钥打码后仍把能复原的半截写进 wiki-ext。</p>
-      <h4>同一段话怎么改</h4>
-      <p>原生 wiki：「需求 N123：和 PM 张三 1on1 里他说加宽表字段；设计在飞书文档；token=abc；我私下觉得这会影响陪家人的时间；原则是宽表不如事件表。」</p>
-      <table>
-        <tr><th>片段</th><th>类别</th><th>改法</th><th>wiki-ext 里写成</th></tr>
-        <tr><td>需求 N123；飞书文档链</td><td>司内密文</td><td>保留</td><td>原样</td></tr>
-        <tr><td>PM 张三</td><td>工作身份</td><td>保留</td><td>「PM 张三」</td></tr>
-        <tr><td>1on1 里他说加宽表字段</td><td>敏感个人包着工作结论</td><td>改写留结论</td><td>「PM 张三要求加宽表字段」</td></tr>
-        <tr><td>token=abc</td><td>密钥</td><td>删除（原生 wiki 也删）</td><td>不出现</td></tr>
-        <tr><td>会影响陪家人的时间</td><td>敏感个人</td><td>删除</td><td>不出现</td></tr>
-        <tr><td>宽表不如事件表</td><td>通用</td><td>保留</td><td>原样</td></tr>
-      </table>
-      <p>对外页整段写成：「需求 N123：PM 张三要求加宽表字段；设计在飞书文档；原则是宽表不如事件表。」</p>
+      <p>只有这次就是要更新对外副本时，才读 <code>maintain.md</code> 的「对外副本 · 生成」。清单里出现 <code>sources/</code> 则整次失败。仓内生成可以自行提交。把 wiki-ext 拷给外部，或把整仓 push 到别人能 clone 的网，仍要等人确认。</p>
     </div>
   </div>
 </body>
