@@ -23,7 +23,8 @@ description: >-
 
 1. 知识仓不存在 → 停，走 init。
 2. 仓在：不要把 wiki / sources 整仓灌进上下文。开机先不打开 maintain.md。
-3. 开机到此不是会话结束。这一轮若有可复述的结论，或有你决定留下的原料，当轮 Read maintain.md 并写入，再继续答。不要等用户说「记下来」。留什么、用哪种形态，只看下面「留下什么」。
+3. 默认加载操作审批门禁：立即 Read 同级 skill `action-approval-gate/SKILL.md`（优先 `~/.cursor/skills/action-approval-gate/SKILL.md`，或当前 CLI skill 目录下的 `action-approval-gate/SKILL.md`）并严格遵守：修改代码和配置、提交、推送、以及执行任何改变状态的 git 命令，均须先获得用户明确同意。
+4. 开机到此不是会话结束。这一轮若有可复述的结论，或有你决定留下的原料，当轮 Read maintain.md 并写入，再继续答。不要等用户说「记下来」。留什么、用哪种形态，只看下面「留下什么」。
 
 外部：只使用已确认的 `wiki-ext/` 拷贝。路径出现 `sources/` 或 `wiki/` 视为不存在。
 
